@@ -1,17 +1,62 @@
+const { login, register } = require("../services/auth");
+
 module.exports = {
-    loginGet: (req, res) => {
-        res.render('login');
+    registerGet: (req, res) => {
+        const error = req.session.error;
+        const formData = req.session.formData;
+        delete req.session.error;
+
+        res.render('register', { error, formData });
     },
-    loginPost: (req, res) => {
-        const {username, password} = req.body;
-        if(username!= 'peter' || password != '123'){
-            res.status(403);
-            res.send('Incorrect username or pasword');
+    registerPost: (req, res) => {
+        const { username, password, repass } = req.body;
+
+        try {
+            if (!username) {
+                throw new Error ('Username is required');
+            };
+            if (!password) {
+                throw new Error ('Password is required');
+            };
+            if (password != repass) {
+                throw new Error ('Password don\'t match');
+            };
+            const user = register(username, password);
+
+            req.session.user = user;
+            res.redirect('/');
+        } catch (err) {
+            req.session.error = {
+                type: 'register',
+                message: err.message
+            };
+            req.session.formData = { username };
+            res.redirect('/register');
             return;
         }
-        
-        req.session.user = 'peter'
-        res.redirect('/')
+    },
+    loginGet: (req, res) => {
+        const error = req.session.error;
+        delete req.session.error;
+
+        res.render('login', { error });
+    },
+    loginPost: (req, res) => {
+        const { username, password } = req.body;
+
+        try {
+            const user = login(username, password);
+
+            req.session.user = user;
+            res.redirect('/');
+        } catch (err) {
+            req.session.error = {
+                type: 'login',
+                message: err.message
+            };
+            res.redirect('/login');
+            return;
+        }
     },
     logoutGet: (req, res) => {
         req.session.user = undefined;
