@@ -32,9 +32,14 @@ function login(username, password) {
     console.log('Logged in as', username);
 
     return user;
+};
+
+function getUserData() {
+    return users;
 }
 
 module.exports = {
     register,
-    login
+    login,
+    getUserData
 }

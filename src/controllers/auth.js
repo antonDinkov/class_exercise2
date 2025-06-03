@@ -1,6 +1,9 @@
 const { login, register } = require("../services/auth");
 
 module.exports = {
+    details: (req, res) => {
+        
+    },
     registerGet: (req, res) => {
         const error = req.session.error;
         const formData = req.session.formData;
