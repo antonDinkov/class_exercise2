@@ -2,7 +2,7 @@ const express = require('express');
 const handlebars = require('express-handlebars');
 const session = require('express-session');
 const { homeController } = require('./controllers/home');
-const { loginGet, loginPost, logoutGet, registerGet, registerPost } = require('./controllers/auth');
+const { loginGet, loginPost, logoutGet, registerGet, registerPost, details } = require('./controllers/auth');
 /* const { router } = require('./controllers/home');
 const { sessionRouter } = require('./controllers/session'); */
 
@@ -34,5 +34,6 @@ app.post('/register', registerPost);
 app.get('/login', loginGet);
 app.post('/login', loginPost);
 app.get('/logout', logoutGet);
+app.get('/details', details);
 
 app.listen(3000, () => console.log('Server started'));

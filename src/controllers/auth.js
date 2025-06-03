@@ -1,8 +1,9 @@
-const { login, register } = require("../services/auth");
+const { login, register, getUserData } = require("../services/auth");
 
 module.exports = {
     details: (req, res) => {
-        
+        const userData = getUserData();
+        res.json(userData);
     },
     registerGet: (req, res) => {
         const error = req.session.error;
@@ -11,7 +12,7 @@ module.exports = {
 
         res.render('register', { error, formData });
     },
-    registerPost: (req, res) => {
+    registerPost: async (req, res) => {
         const { username, password, repass } = req.body;
 
         try {
@@ -24,7 +25,7 @@ module.exports = {
             if (password != repass) {
                 throw new Error ('Password don\'t match');
             };
-            const user = register(username, password);
+            const user = await register(username, password);
 
             req.session.user = user;
             res.redirect('/');
@@ -44,11 +45,11 @@ module.exports = {
 
         res.render('login', { error });
     },
-    loginPost: (req, res) => {
+    loginPost: async (req, res) => {
         const { username, password } = req.body;
 
         try {
-            const user = login(username, password);
+            const user = await login(username, password);
 
             req.session.user = user;
             res.redirect('/');

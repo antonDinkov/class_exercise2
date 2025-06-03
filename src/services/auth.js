@@ -1,18 +1,17 @@
-const users = {
-    'peter': {
-        username: 'peter',
-        password: '123'
-    }
-};
+const bcript = require('bcrypt');
 
-function register(username, password) {
+const users = {};
+
+register('peter', '123');
+
+async function register(username, password) {
     if (users[username]) {
         throw new Error('Username is taken')/* throw прекъсва изпълнението на функцията и затова няма нужда от return */
     };
 
     const user = {
         username,
-        password
+        hashedPassword: await bcript.hash(password, 10)
     };
 
     users[username] = user;
@@ -22,9 +21,9 @@ function register(username, password) {
     return user;
 }
 
-function login(username, password) {
+async function login(username, password) {
     const user = users[username];
-    if (!user || user.password != password) {
+    if (!user || !(await bcript.compare(password, user.hashedPassword))) {
         console.log('Incorrect password for user', username);
         throw new Error('Incorrect username or password');
     };
