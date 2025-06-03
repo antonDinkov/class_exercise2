@@ -1,8 +1,8 @@
 const { login, register, getUserData } = require("../services/auth");
 
 module.exports = {
-    details: (req, res) => {
-        const userData = getUserData();
+    details: async (req, res) => {
+        const userData = await getUserData();
         res.json(userData);
     },
     registerGet: (req, res) => {
